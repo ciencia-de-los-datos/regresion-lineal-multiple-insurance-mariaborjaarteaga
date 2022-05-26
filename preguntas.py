@@ -25,10 +25,10 @@ def pregunta_01():
     y= df['charges']
 
     # Asigne una copia del dataframe `df` a la variable `X`.
-    x=copy.copy(df)
+    X=copy.copy(df)
 
     # Remueva la columna `charges` del DataFrame `X`.
-    x.drop(['charges'], axis=1)
+    X=X.drop(['charges'], axis=1)
 
     # Retorne `X` y `y`
     return X, y
@@ -51,7 +51,7 @@ def pregunta_02():
     (X_train, X_test, y_train, y_test,) = train_test_split(
         X,
         y,
-        test_size=300/len(X),
+        test_size=300,
         random_state=12345,
     )
 
@@ -81,6 +81,7 @@ def pregunta_03():
     from sklearn.model_selection import GridSearchCV
     from sklearn.pipeline import Pipeline
     from sklearn.preprocessing import OneHotEncoder
+    import numpy as np
 
     pipeline = Pipeline(
         steps=[
@@ -105,7 +106,7 @@ def pregunta_03():
             ),
             # Paso 3: Construya un modelo de regresión lineal.
             (
-                "model",
+                "clf",
                 LinearRegression(),
             ),
         ],
@@ -117,19 +118,20 @@ def pregunta_03():
     # Defina un diccionario de parámetros para el GridSearchCV. Se deben
     # considerar valores desde 1 hasta 11 regresores para el modelo
     param_grid = {
-        ____: ____(____, ____),
+        'clf__n_jobs': np.linspace(1, 11),
     }
 
     # Defina una instancia de GridSearchCV con el pipeline y el diccionario de
     # parámetros. Use cv = 5, y como métrica de evaluación el valor negativo del
     # error cuadrático medio.
-    gridSearchCV = (
+    #gridSearchCV = GridSearchCV( estimator=pipeline, param_grid=param_grid, cv=5, scoring='neg_mean_squared_error', refit=True, return_train_score=True)
+    gridSearchCV = GridSearchCV(
         estimator=pipeline,
         param_grid=param_grid,
         cv=5,
         scoring='neg_mean_squared_error',
-        refit=False,
-        return_train_score=False,
+        refit=True,
+        return_train_score=True,
     )
 
     # Búsque la mejor combinación de regresores
